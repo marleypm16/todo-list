@@ -1,4 +1,5 @@
 
+import { useState } from 'react'
 import styles from './App.module.css'
 import logo from './assets/rocket.png'
 
@@ -8,17 +9,24 @@ interface Task{
     done:boolean,
 }
 function App() {
+    const [tasks,setTasks] = useState<Task[]>([])
     const [taskQuantity,setTaskQuantity] = useState<number>(0)
     const [finishedTasks,setFineshedTasks] = useState<number>(0)
-    let tasks: Task[] = [{
-        id:1,
-        description:'asdasdads',
-        done:false,
-    },{
-        id:2,
-        description:'Testando po',
-        done:false,
-    }]
+    const [taskDescription,setTaskDescription] = useState<string>('')
+    const [id,setId] = useState(1)
+
+
+    const createTask = () =>{
+        const newTask : Task = {
+            id:id,
+            description : taskDescription,
+            done : false
+        }
+        setTasks(prevTasks => [...prevTasks,newTask])
+        setId(prevCount => prevCount + 1)
+        setTaskQuantity(prevCont => prevCont + 1)
+        setFineshedTasks(prevCount => prevCount+1)
+    }
     return (
     <>
         <div className={styles.container}>
@@ -28,15 +36,15 @@ function App() {
             </header>
             <main className={styles.main_conteiner} >
                 <section className={styles.section}>
-                    <input className={styles.input} type="text" placeholder="Adicione uma nova tarefa"/>
-                    <button className={styles.button}>Criar +</button>
+                    <input className={styles.input} type="text" onChange={(e) => setTaskDescription(e.target.value)} placeholder="Adicione uma nova tarefa"/>
+                    <button onClick={createTask} className={styles.button}>Criar +</button>
                 </section>
                 <section>
                     <p>Tarefas Criadas <span>{taskQuantity}</span></p>
                     <p>Tarefas Concluídas <span>{finishedTasks}</span></p>
                 </section>
                 <section>
-                    {tasks ? (
+                    {tasks.length > 0 ? (
                         tasks.map((task:Task) => (
                             <div key={task.id}>
                                 {task.description}
