@@ -13,6 +13,7 @@ function App() {
     const [taskQuantity,setTaskQuantity] = useState<number>(0)
     const [finishedTasks,setFineshedTasks] = useState<number>(0)
     const [taskDescription,setTaskDescription] = useState<string>('')
+    const [isChek,setIsChek] = useState<boolean>(false)
     const [id,setId] = useState(1)
 
 
@@ -25,7 +26,22 @@ function App() {
         setTasks(prevTasks => [...prevTasks,newTask])
         setId(prevCount => prevCount + 1)
         setTaskQuantity(prevCont => prevCont + 1)
-        setFineshedTasks(prevCount => prevCount+1)
+    }
+
+    const setDone = (id:number) =>{
+      setTasks(prevTasks => prevTasks.map(task =>
+        task.id === id ? {...task,done:true} : task
+    ))
+        setIsChek(preCheck =>
+            preCheck ? false : true
+        )
+        if(!isChek){
+            setFineshedTasks(prevCount => prevCount+1)
+        } else{
+            setFineshedTasks(prevCount => prevCount - 1)
+        }
+
+
     }
     return (
     <>
@@ -47,6 +63,7 @@ function App() {
                     {tasks.length > 0 ? (
                         tasks.map((task:Task) => (
                             <div key={task.id}>
+                                <input type="checkbox" checked={isChek} onChange={() =>setDone(task.id)} name="" id="" />
                                 {task.description}
                             </div>
                         ))
