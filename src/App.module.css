@@ -50,6 +50,10 @@
   cursor: pointer;
 }
 
+.button:hover{
+  background-color: #4EA8DE;
+}
+
 .input{
   min-width: 320px;
   max-width: 756px;
@@ -125,4 +129,12 @@
 .trash_button:hover{
   color: #E25858;
   background-color: #333333;
+}
+
+.task_unchecked{
+  color: #F2F2F2;
+}
+.task_checked{
+  color: #808080;
+  text-decoration: line-through;
 }
