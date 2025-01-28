@@ -11,10 +11,8 @@ interface Task{
 }
 function App() {
     const [tasks,setTasks] = useState<Task[]>([])
-    const [taskQuantity,setTaskQuantity] = useState<number>(0)
-    const [finishedTasks,setFineshedTasks] = useState<number>(0)
+    const [finishedTasks,setFinishedTasks] = useState<number>(0)
     const [taskDescription,setTaskDescription] = useState<string>('')
-    const [isChek,setIsChek] = useState<boolean>(false)
     const [id,setId] = useState(1)
 
 
@@ -26,26 +24,28 @@ function App() {
         }
         setTasks(prevTasks => [...prevTasks,newTask])
         setId(prevCount => prevCount + 1)
-        setTaskQuantity(prevCont => prevCont + 1)
         setTaskDescription('')
     }
 
-    const setDone = (id:number) =>{
-        console.log(tasks)
-        setIsChek(preCheck =>
-            preCheck ? false : true
-        )
-        setTasks(prevTasks => prevTasks.map(task =>
-            task.id === id ? {...task,done:isChek} : task
-        ))
-        if(!isChek){
-            setFineshedTasks(prevCount => prevCount+1)
-        } else{
-            setFineshedTasks(prevCount => prevCount - 1)
-        }
-
-
-    }
+    const setDone = (id: number) => {
+        // Atualiza as tarefas
+        setTasks((prevTasks) => {
+            const updatedTasks = prevTasks.map((task) =>
+                task.id === id ? { ...task, done: !task.done } : task
+            );
+    
+            // Atualiza a contagem de tarefas concluídas usando o estado atualizado
+            const completedCount = updatedTasks.reduce(
+                (counter, task) => (task.done ? counter + 1 : counter),
+                0
+            );
+    
+            setFinishedTasks(completedCount);
+    
+            return updatedTasks; // Retorna a nova lista de tarefas
+        });
+    };
+    
     return (
     <>
         <div className={styles.container}>
@@ -59,15 +59,15 @@ function App() {
                     <button onClick={createTask} className={styles.button}>Criar +</button>
                 </section>
                 <section className={styles.task_quantity_section}>
-                    <p className={styles.task_quantity}>Tarefas Criadas <span className={styles.counter}>{taskQuantity}</span></p>
-                    <p className={styles.finished_tasks}>Tarefas Concluídas <span className={styles.counter}>{finishedTasks}</span></p>
+                    <p className={styles.task_quantity}>Tarefas Criadas <span className={styles.counter}>{tasks.length}</span></p>
+                    <p className={styles.finished_tasks}>Tarefas Concluídas <span className={styles.counter}>{tasks.length === 0 ? tasks.length : finishedTasks + ' ' + 'de' + ' ' + tasks.length}</span></p>
                 </section>
                 <section className={styles.task_section}>
                     {tasks.length > 0 ? (
                         tasks.map((task:Task) => (
                             <div className={styles.task} key={task.id}>
-                                <input type="checkbox" checked={isChek} onChange={() =>setDone(task.id)} name="" id="" />
-                                {task.description}
+                                <input type="checkbox" checked={task.done} onChange={() =>setDone(task.id)} name="" id="" />
+                                <p className={task.done ? styles.task_checked : styles.task_uncheked}>{task.description}</p>
                                 <button className={styles.trash_button}>
                                     <img src={trash} alt="deletar tarefa" />
                                 </button>
